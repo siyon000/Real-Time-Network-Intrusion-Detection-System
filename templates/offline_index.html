@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Guardian - Precision Anomaly Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url("{{ url_for('static', filename='/images/bg.jpg') }}") no-repeat center center fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(50, 50, 50, 0.5));
+            mix-blend-mode: multiply;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .premium-card {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid rgba(100, 100, 100, 0.2);
+            box-shadow:
+                0 15px 25px rgba(0, 0, 0, 0.2),
+                0 10px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5px);
+            position: relative;
+            z-index: 2;
+        }
+
+        .premium-input {
+            background: rgba(50, 50, 50, 0.3);
+            border: 1px solid rgba(150, 150, 150, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .premium-input:hover {
+            background: rgba(70, 70, 70, 0.4);
+            border-color: rgba(200, 200, 200, 0.5);
+        }
+
+        .premium-button {
+            background: linear-gradient(to right, #2c2c2c, #4a4a4a);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            color: #e0e0e0;
+        }
+
+        .premium-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: all 0.4s ease;
+        }
+
+        .premium-button:hover::before {
+            left: 100%;
+        }
+
+        .network-icon {
+            background: linear-gradient(45deg, #1c1c1c, #3a3a3a);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .text-glow {
+            text-shadow: 0 0 10px rgba(200, 200, 200, 0.3);
+            color: #e0e0e0;
+        }
+
+        body,
+        input,
+        button,
+        a,
+        p,
+        span,
+        div {
+            color: #e0e0e0;
+        }
+    </style>
+</head>
+
+<body class="antialiased min-h-screen flex items-center justify-center p-4">
+    <div class="gradient-overlay"></div>
+    <div class="w-full max-w-md premium-card rounded-2xl p-8 shadow-2xl">
+        <div class="text-center mb-8">
+            <div class="network-icon rounded-full w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                <i class="fas fa-network-wired text-5xl text-white/90"></i>
+            </div>
+            <h1 class="text-4xl font-bold mb-3 tracking-tight text-glow"></h1>
+            <p class="text-white/80 text-lg"><b>If it's smart, it's vulnerable</b></p>
+        </div>
+
+        <form id="uploadForm" action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data"
+            class="space-y-6">
+            <div class="relative group">
+                <input type="file" id="file-input" name="file" accept=".csv"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" required>
+                <div class="premium-input border-2 border-dashed border-white/30 rounded-xl p-6 text-center 
+                    transition group-hover:border-white/60">
+                    <i class="fas fa-cloud-upload-alt text-5xl text-white/70 mb-4 block"></i>
+                    <span class="text-white font-medium text-lg">Upload CSV File</span>
+                    <p id="file-name" class="text-sm text-white/50 mt-2">No file selected</p>
+                </div>
+            </div>
+
+            <button type="submit" class="premium-button w-full py-3.5 rounded-lg 
+                hover:opacity-90 transition transform hover:scale-[1.02] 
+                focus:outline-none focus:ring-4 focus:ring-white/40 
+                font-semibold text-lg tracking-wide">
+                <i class="fas fa-chart-line mr-3"></i> Analyze Network Traffic
+            </button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mt-6 space-y-3">
+            {% for category, message in messages %}
+            <div class="{{ 'bg-gray-700/50 text-red-300' if category == 'error' else 'bg-gray-700/50 text-green-300' }} 
+                p-4 rounded-lg shadow-sm flex items-center">
+                <i class="{{ 'fas fa-exclamation-circle' if category == 'error' else 'fas fa-check-circle' }} mr-3"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% if output_file %}
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('download', filename=output_file.split('/')[-1]) }}" download
+                class="text-white/80 hover:text-white font-medium transition flex items-center justify-center">
+                <i class="fas fa-download mr-2"></i>Download Prediction Results
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', function (event) {
+            const fileName = event.target.files[0]?.name || 'No file selected';
+            fileNameDisplay.textContent = fileName;
+            fileNameDisplay.classList.add('text-white');
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', function (event) {
+            if (!fileInput.files.length) {
+                event.preventDefault();
+                alert('Please select a CSV file to upload');
+            }
+        });
+    </script>
+</body>
+
+</html>

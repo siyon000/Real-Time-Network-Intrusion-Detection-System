@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fsociety - Intrusion Detection System</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @keyframes binaryRain {
+            0% {
+                transform: translateY(-100%);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: radial-gradient(circle, #0c0c0c, #0a0a0a, #080808);
+            overflow: hidden;
+        }
+
+        .binary-rain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .binary-char {
+            position: absolute;
+            font-size: 1.2rem;
+            animation: binaryRain linear infinite;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .fsociety-logo {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #00ff00;
+            text-shadow: 0 0 20px #00ff00;
+        }
+
+        .btn-glow {
+            background: linear-gradient(to right, #0c0c0c, #0a0a0a);
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+            border: 1px solid #00ff00;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-glow:hover {
+            background: linear-gradient(to right, #0a0a0a, #080808);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 10px rgba(0, 255, 0, 0.3);
+        }
+
+        .team-member {
+            transition: all 0.3s ease;
+            color: #a0a0b0;
+        }
+
+        .team-member:hover {
+            transform: scale(1.1) translateY(-5px);
+            color: #00ff00;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .text-xl {
+            color: #00ff00;
+        }
+    </style>
+</head>
+
+<body class="h-screen flex items-center justify-center">
+    <div id="binary-rain" class="binary-rain"></div>
+    <div class="w-full max-w-2xl mx-auto relative z-10 text-center">
+        <h1 class="fsociety-logo mb-4">Fsociety</h1>
+        <p class="text-xl mb-8">Intrusion Detection System</p>
+        <div class="flex justify-center space-x-6">
+            <a href="/offline-mode" class="btn-glow font-bold py-4 px-8 rounded-xl inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829A9 9 0 016.636 5.636m12.728 0A9 9 0 015.636 6.636m12.728 0L5.636 5.636" />
+                </svg>
+                Offline Mode
+            </a>
+            <a href="/online-mode" class="btn-glow font-bold py-4 px-8 rounded-xl inline-flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+                Online Mode
+            </a>
+        </div>
+        <div class="mt-12 text-center">
+            <p class="text-xl font-semibold tracking-wider text-gray-400">
+                <span class="team-member mx-2 relative">Ganesh</span> |
+                <span class="team-member mx-2 relative">Ishor</span> |
+                <span class="team-member mx-2 relative">Siyon</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function createBinaryRain() {
+            const binaryRain = document.getElementById('binary-rain');
+            const numChars = 50;
+
+            for (let i = 0; i < numChars; i++) {
+                const binaryChar = document.createElement('span');
+                binaryChar.classList.add('binary-char');
+                binaryChar.textContent = Math.random() > 0.5 ? '1' : '0';
+                binaryChar.style.left = `${Math.random() * 100}%`;
+                const duration = Math.random() * 20 + 10;
+                binaryChar.style.animationDuration = `${duration}s`;
+                binaryChar.style.animationDelay = `-${Math.random() * duration}s`;
+                binaryRain.appendChild(binaryChar);
+            }
+        }
+
+        createBinaryRain();
+    </script>
+</body>
+
+</html>

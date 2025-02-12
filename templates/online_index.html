@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Network Monitoring Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600&family=Orbitron:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-network-wired me-2"></i>
+            Fsocitey
+        </div>
+        <div class="nav-item active" data-page="dashboard">
+            <i class="fas fa-chart-line"></i>
+            Dashboard
+        </div>
+        <div class="nav-item" data-page="security">
+            <i class="fas fa-shield-alt"></i>
+            Security
+        </div>
+        <div class="nav-item" data-page="statistics">
+            <i class="fas fa-chart-bar"></i>
+            Statistics
+        </div>
+    </div>
+    <!-- Dashboard Content -->
+    <div class="main-content" id="dashboardPage">
+        <!-- Header -->
+        <div class="header">
+            <div>
+                <div class="header-title">Network Monitoring</div>
+                <div class="status-badge mt-2">
+                    <span class="me-1">●</span> Active
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+            </div>
+
+            <div class="header-actions">
+                <button id="startCapture" class="btn btn-primary me-2">
+                    <i class="fas fa-play me-2"></i>Start Capture
+                </button>
+                <button id="stopCapture" class="btn btn-outline">
+                    <i class="fas fa-stop me-2"></i>Stop Capture
+                </button>
+            </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value" id="totalFlows">0</div>
+                    <div class="metric-label">Total Network Flows</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value" id="attackFlows">0</div>
+                    <div class="metric-label">Detected Attacks</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div class="metric-value" id="blockedIPs">0</div>
+                    <div class="metric-label">Blocked IPs</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card">
+                    <div id="statusIndicator">
+                        <div class="metric-value" id="captureStatus">Stopped</div>
+                        <div class="metric-label">Capture Status</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Flows Table -->
+        <div class="dashboard-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="mb-0">Recent Network Flows</h5>
+                <button id="downloadCSV" class="btn btn-outline">
+                    <i class="fas fa-download me-1"></i>Export
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Source IP</th>
+                            <th>Source Country</th>
+                            <th>Destination IP</th>
+                            <th>Destination Country</th>
+                            <th>Source Port</th>
+                            <th>Destination Port</th>
+                            <th>Protocal</th>
+                            <th>Status</th>
+                            <th>Packets</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="flowData">
+                        <!-- Flow data will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Security Content -->
+    <div class="main-content" id="securityPage" style="display:none;">
+        <div class="header">
+            <div>
+                <div class="header-title">Detected Security Threats</div>
+                <div class="status-badge mt-2">
+                    <span class="me-1">●</span> Monitoring Active
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="clearAttacks" class="btn btn-outline">
+                    <i class="fas fa-trash-alt me-2"></i>Clear Attacks
+                </button>
+            </div>
+        </div>
+
+        <div class="security-table">
+            <table class="table" id="attacksTable">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Source IP</th>
+                        <th>Source Country</th>
+                        <th>Destination IP</th>
+                        <th>Destination Country</th>
+                        <th>Source Port</th>
+                        <th>Destination Port</th>
+                        <th>Protocol</th>
+                        <th>Status</th>
+                        <th>Packets</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="attacksData">
+                    <!-- Attack data will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Blocked IPs Section -->
+        <div class="mt-4">
+            <div class="header mb-3">
+                <div class="header-title">Blocked IPs</div>
+            </div>
+            <table class="table" id="blockedIPsTable">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Blocked Since</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="blockedIPsData">
+                    <!-- Blocked IPs will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- New Statistics Page -->
+    <div class="main-content" id="statisticsPage" style="display:none;">
+        <div class="header">
+            <div>
+                <div class="header-title">Network Statistics</div>
+                <div class="status-badge mt-2">
+                    <span class="me-1">●</span> Live Monitoring
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="statistics-card">
+                    <h5 class="mb-3">Top Attacker IPs</h5>
+                    <div id="topAttackerIPs">
+                        <!-- Top attacker IPs will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="statistics-card">
+                    <h5 class="mb-3">Top Victim IPs</h5>
+                    <div id="topVictimIPs">
+                        <!-- Top victim IPs will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="statistics-card">
+                    <h5 class="mb-3">Network Traffic Summary</h5>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Packets</span>
+                        <span class="stat-value" id="totalPackets">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg Packet Size</span>
+                        <span class="stat-value" id="avgPacketSize">0 bytes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Unique IPs</span>
+                        <span class="stat-value" id="uniqueIPs">0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="statistics-card">
+                    <h5 class="mb-3">Attack Statistics</h5>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Attacks</span>
+                        <span class="stat-value" id="totalAttacks">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Attack Rate</span>
+                        <span class="stat-value" id="attackRate">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Most Common Attack Type</span>
+                        <span class="stat-value" id="commonAttackType">N/A</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="statistics-card">
+                    <h5 class="mb-3">Blocked & Quarantined</h5>
+                    <div class="stat-item">
+                        <span class="stat-label">Blocked IPs</span>
+                        <span class="stat-value" id="blockedIPCount">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Quarantine Duration</span>
+                        <span class="stat-value" id="avgQuarantineDuration">0h</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Unblocked IPs</span>
+                        <span class="stat-value" id="unblockCount">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+
+</html>
