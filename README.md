@@ -11,6 +11,5 @@ A web-based system for detecting and alerting suspicious network activities in r
 
 ![image](https://github.com/user-attachments/assets/77f73953-3a7d-46f8-a8ab-669b1cf5ca6f)
 ![image](https://github.com/user-attachments/assets/4332fb56-752d-41c3-9c81-3f335a589dc1)
-![image](https://github.com/user-attachments/assets/8bb344e5-bf7a-4429-a702-fc60fb75bd04)
 ![image](https://github.com/user-attachments/assets/1aad076f-b8e5-4162-ad97-dac527017273)
 ![image](https://github.com/user-attachments/assets/b97d346f-dbcc-4cda-85ca-555a003d66d9)
