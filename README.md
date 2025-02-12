@@ -9,4 +9,4 @@ A web-based system for detecting and alerting suspicious network activities in r
     📧 Automated Email Alerts – Notifies users of detected threats.
     📂 Upload & Analyze – Allows users to upload network logs for analysis.
 
-    ![image](https://github.com/user-attachments/assets/77f73953-3a7d-46f8-a8ab-669b1cf5ca6f)
+![image](https://github.com/user-attachments/assets/77f73953-3a7d-46f8-a8ab-669b1cf5ca6f)
