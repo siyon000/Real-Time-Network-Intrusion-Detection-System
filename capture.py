@@ -433,7 +433,7 @@ def process_packets(predict_model):
 def send_admin_alert(src_ip, dst_ip):
     """Send an alert email to the admin"""
     try:
-        admin_email = 'siyonrai2@gmail.com'
+        admin_email = 'reciver email'
         subject = f"NIDS Alert: Possible Attack from {src_ip} to {dst_ip}"
         body = f"""
         The NIDS has detected more than 10 attacks from the following network flow:
@@ -446,13 +446,13 @@ def send_admin_alert(src_ip, dst_ip):
 
         msg = MIMEText(body)
         msg['Subject'] = subject
-        msg['From'] = 'siyonrai840@gmail.com'
+        msg['From'] = 'sender email'
         msg['To'] = admin_email
 
         # Use Gmail SMTP server
         with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
             smtp.starttls()
-            smtp.login('siyonrai840@gmail.com', 'mnqpcpttflskskpt')
+            smtp.login('sender email', 'app password')
             smtp.send_message(msg)
         
         logger.info(f"Alert email sent to {admin_email} for IP {src_ip} -> {dst_ip}")
